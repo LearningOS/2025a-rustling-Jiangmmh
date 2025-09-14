@@ -5,8 +5,6 @@
 // Execute `rustlings hint structs1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 struct ColorClassicStruct {
     // TODO: Something goes here
     red: u8,
@@ -24,8 +22,6 @@ struct ColorTupleStruct(u8, u8, u8);
 //  2. 测试断言：
 //      - assert_eq!宏在失败时依赖Debug输出
 
-∙
-对开发和调试至关重要
 #[derive(Debug)]
 struct UnitLikeStruct;
 
