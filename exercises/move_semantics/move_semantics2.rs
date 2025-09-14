@@ -11,6 +11,7 @@
 fn main() {
     let vec0 = Vec::new();
 
+    // 这里clone了一下，传入的是vec0的副本，因此所有权转移不会导致v0失效
     let mut vec1 = fill_vec(vec0.clone());
 
     println!("{} has length {}, with contents: `{:?}`", "vec0", vec0.len(), vec0);

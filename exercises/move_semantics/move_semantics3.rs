@@ -19,6 +19,7 @@ fn main() {
     println!("{} has length {} content `{:?}`", "vec1", vec1.len(), vec1);
 }
 
+// 该函数参数为mut，会将传入参数的所有权转移到函数中的vec
 fn fill_vec(mut vec: Vec<i32>) -> Vec<i32> {
     vec.push(22);
     vec.push(44);

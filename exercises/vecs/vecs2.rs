@@ -20,6 +20,8 @@ fn vec_loop(mut v: Vec<i32>) -> Vec<i32> {
 }
 
 fn vec_map(v: &Vec<i32>) -> Vec<i32> {
+    // map-reduce
+    // 先通过iter获取v的迭代器，然后使用map，让每个元素都执行闭包函数
     v.iter().map(|element| {
         // TODO: Do the same thing as above - but instead of mutating the
         // Vec, you can just return the new number!
