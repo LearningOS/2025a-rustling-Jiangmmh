@@ -9,9 +9,9 @@
 
 fn main() {
     let mut x = 100;
-    let y = &mut x; // y取x的引用
+    let y = &mut x; // 借用，y取x的引用
     *y += 100;
-    let z = &mut x; // z取x的引用
+    let z = &mut x; // 借用，z取x的引用
     *z += 1000;
     assert_eq!(x, 1200); // 对于y和z的修改会影响x
 }
