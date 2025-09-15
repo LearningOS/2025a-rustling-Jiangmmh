@@ -31,6 +31,9 @@ mod my_module {
     use super::Command;
 
     // TODO: Complete the function signature!
+    // 根据主函数中的内容，可知传入的是一个Vec，其元素为(String, Command)元组
+    // 返回值是一个Vec<String>，我们是遍历每个元组，根据Command执行相应的任务
+    // Command是枚举类型，可以用match来进行判断Command类型
     pub fn transformer(input: Vec<(String, Command)>) -> Vec<String> {
         // TODO: Complete the output declaration!
         let mut output: Vec<String> = vec![];
@@ -44,7 +47,7 @@ mod my_module {
                 output.push(string.trim().into());
             },
             Command::Append(n) => {
-                // 调用repeat重复"bar"n次
+                // 调用repeat重复"bar"n次，n为引用，必须先解引用
                 let suffix = "bar".repeat(*n);
 
                 // string有可能是&str，必须先转为String
