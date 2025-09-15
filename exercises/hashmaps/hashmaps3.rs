@@ -14,14 +14,13 @@
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
 use std::collections::HashMap;
 
 // A structure to store the goal details of a team.
 struct Team {
-    goals_scored: u8,
-    goals_conceded: u8,
+    goals_scored: u8,   // 进球数
+    goals_conceded: u8, // 失球数
 }
 
 fn build_scores_table(results: String) -> HashMap<String, Team> {
@@ -39,6 +38,59 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         // will be the number of goals conceded from team_2, and similarly
         // goals scored by team_2 will be the number of goals conceded by
         // team_1.
+
+        // 这个问题要求我们学会根据HashMap中的key是否存在，采取插入还是更新操作
+        // 总结：
+        //  1. 直接插入：insert(k, v)，key不存在则插入，key存在则覆盖
+        //  2. 检查key是否存在：contains_key(k)，存在返回true，不存在返回false
+        //  3. 基于旧值更新：*map.entry(k).or_insert(0) += 5;
+        //  4. 获取旧值后更新：
+        //          if let Some(value) = scores.get_mut("Alice") {
+        //              *value = 40;  // 直接修改值
+        //          }
+        //  5. 复杂更新：
+        //          map.entry("Alice")
+        //          .and_modify(|v| *v += 10)  // 如果键存在，执行闭包更新
+        //          .or_insert(1);             // 如果键不存在，插入1
+        // if let Some(team) = scores.get_mut(&team_1_name) {
+        //     team.goals_scored += team_1_score;
+        //     team.goals_conceded += team_2_score;
+        // } else {
+        //     scores.insert(team_1_name, Team {
+        //         goals_scored: team_1_score,
+        //         goals_conceded: team_2_score,
+        //     });
+        // }
+
+        // if let Some(team) = scores.get_mut(&team_2_name) {
+        //     team.goals_scored += team_2_score;
+        //     team.goals_conceded += team_1_score;
+        // } else {
+        //     scores.insert(team_2_name, Team {
+        //         goals_scored: team_2_score,
+        //         goals_conceded: team_1_score,
+        //     });
+        // }
+
+        scores.entry(team_1_name).
+            and_modify(|v| {
+                v.goals_scored += team_1_score;
+                v.goals_conceded += team_2_score;
+            }).or_insert(Team{
+            goals_scored: team_1_score,
+            goals_conceded: team_2_score,
+        });
+
+        scores.entry(team_2_name).
+            and_modify(|v| {
+                v.goals_scored += team_2_score;
+                v.goals_conceded += team_1_score;
+            }).or_insert(Team{
+            goals_scored: team_2_score,
+            goals_conceded: team_1_score,
+        });
+
+
     }
     scores
 }
