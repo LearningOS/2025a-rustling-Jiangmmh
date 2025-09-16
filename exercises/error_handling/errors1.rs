@@ -9,25 +9,24 @@
 // Execute `rustlings hint errors1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
-pub fn generate_nametag_text(name: String) -> Option<String> {
+pub fn generate_nametag_text(name: String) -> Result<String, String> {
+    // 对name进行检查，如果name为空，返回Err和Ok。
     if name.is_empty() {
         // Empty names aren't allowed.
-        None
+        Err("`name` was empty; it must be nonempty.".into())
     } else {
-        Some(format!("Hi! My name is {}", name))
+        Ok(format!("Hi! My name is {}", name))
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
+    use crate::generate_nametag_text;
     #[test]
     fn generates_nametag_text_for_a_nonempty_name() {
         assert_eq!(
-            generate_nametag_text("Beyoncé".into()),
+            generate_nametag_text("Beyoncé".into()), // 将&str转换为String
             Ok("Hi! My name is Beyoncé".into())
         );
     }
