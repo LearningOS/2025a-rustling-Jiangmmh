@@ -6,6 +6,7 @@
 
 use std::cmp::Ord;
 use std::default::Default;
+use std::thread::sleep;
 
 pub struct Heap<T>
 where
@@ -37,7 +38,24 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        // 有两种思路，第一种思路是插入到末尾然后上移；第二种思路是插入后交换到头部，然后下移
+        // 1. 将value插入到数组末尾
+        self.items.push(value);
+        self.count += 1;
+        let mut idx = self.count;
+
+        // 2. 不断上移
+        while idx > 1 {
+            // 获取父节点的idx
+            let parent_idx = self.parent_idx(idx);
+            // 比较，交换或就位
+            if (self.comparator)(&self.items[idx], &self.items[parent_idx]) {
+                self.items.swap(idx, parent_idx);
+                idx = parent_idx;
+            } else {
+                break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -57,8 +75,18 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+
+        if right > self.count {
+            left
+        } else {
+            if (self.comparator)(&self.items[left], &self.items[right]) {
+                left
+            } else {
+                right
+            }
+        }
     }
 }
 
