@@ -19,14 +19,14 @@ fn main() {
             let start = Instant::now();
             thread::sleep(Duration::from_millis(250));
             println!("thread {} is complete", i);
-            start.elapsed().as_millis()
+            start.elapsed().as_millis()  // 返回执行的时间
         }));
     }
 
     let mut results: Vec<u128> = vec![];
     for handle in handles {
         // TODO: a struct is returned from thread::spawn, can you use it?
-        results.push(handle.join().unwrap());
+        results.push(handle.join().unwrap());   // 等待完成并将结果都放入results中
     }
 
     if results.len() != 10 {
@@ -35,6 +35,6 @@ fn main() {
 
     println!();
     for (i, result) in results.into_iter().enumerate() {
-        println!("thread {} took {}ms", i, result);
+        println!("thread {} took {}ms", i, result);     // 遍历results输出结果
     }
 }
