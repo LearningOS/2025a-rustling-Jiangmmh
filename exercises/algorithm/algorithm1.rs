@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -44,8 +43,9 @@ impl<T> LinkedList<T> {
         }
     }
 
+    // 共有方法，在链表末尾添加节点
     pub fn add(&mut self, obj: T) {
-        // 1. 创建一个新节点
+        // 1. 创建一个新节点，使用Box分配堆内存
         let mut node = Box::new(Node::new(obj));
         node.next = None;
 
@@ -63,10 +63,12 @@ impl<T> LinkedList<T> {
         self.length += 1;
     }
 
+    // 公开方法，调用私有递归方法
     pub fn get(&mut self, index: i32) -> Option<&T> {
         self.get_ith_node(self.start, index)
     }
 
+    // 私有方法，递归查找第index个节点
     fn get_ith_node(&mut self, node: Option<NonNull<Node<T>>>, index: i32) -> Option<&T> {
         match node {
             None => None,   // 当前链表为空，直接返回None
@@ -78,45 +80,48 @@ impl<T> LinkedList<T> {
     }
 
 	pub fn merge(list_a:LinkedList<T>, list_b:LinkedList<T>) -> Self
+    where T: std::cmp::PartialOrd,
 	{
-        let mut dummy = Box::new(Node::new(None));
-        let mut tail = unsafe { NonNull::new_unchecked(&mut *dummy) };
+        let mut merged = LinkedList::new();
 
-        let mut current_a = list_a.start;
-        let mut current_b = list_b.start;
+        // 封装获取节点值和移动节点的逻辑
+        let get_val = |node_ptr: NonNull<Node<T>>| unsafe { &(*node_ptr.as_ptr()).val };
+        let take_next = |node_ptr: NonNull<Node<T>>| unsafe {
+            let next = (*node_ptr.as_ptr()).next;
+            let val = std::ptr::read(&(*node_ptr.as_ptr()).val);
+            (val, next)
+        };
 
-        let mut new_length = list_a.length + list_b.length;
+        let mut cur_a = list_a.start;
+        let mut cur_b = list_b.start;
 
-        unsafe {
-            while current_a.is_some() && current_b.is_some() {
-                let a = current_a.unwrap();
-                let b = current_b.unwrap();
-
-                if (*a.as_ptr()).val <= (*b.as_ptr()).val {
-                    (*tail.as_ptr()).next = Some(a);
-                    tail = a;
-                    current_a = (*a.as_ptr()).next;
-                } else {
-                    (*tail.as_ptr()).next = Some(b);
-                    tail = b;
-                    current_b = (*b.as_ptr()).next;
-                }
+        while let (Some(a_node), Some(b_node)) = (cur_a, cur_b) {
+            // 比较a, b当前节点的值，先取较小者
+            if get_val(a_node) <= get_val(b_node) {
+                // 直接获取值
+                let (val, next) = take_next(a_node);
+                merged.add(val);
+                cur_a = next;
+            } else {
+                let (val, next) = take_next(b_node);
+                merged.add(val);
+                cur_b = next;
             }
         }
 
-        if current_a.is_some() {
-            (*tail.as_ptr()).next = current_a;
-        }
+        // 处理剩余节点
+        let mut process_remaining = |mut ptr| {
+            while let Some(node) = ptr {
+                let (val, next) = take_next(node);
+                merged.add(val);
+                ptr = next;
+            }
+        };
 
-        if current_b.is_some() {
-            (*tail.as_ptr()).next = current_b;
-        }
+        process_remaining(cur_a);
+        process_remaining(cur_b);
 
-        Self {
-            length: new_length,
-            start: (*dummy.as_ptr()).next,
-            end: if current_a.is_none() { list_b.end } else { list_a.end },
-        }
+        merged
 	}
 }
 

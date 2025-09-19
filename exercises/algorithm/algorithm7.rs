@@ -3,7 +3,6 @@
 	This question requires you to use a stack to achieve a bracket match
 */
 
-// I AM NOT DONE
 #[derive(Debug)]
 struct Stack<T> {   // 栈结构体
 	size: usize,	// 栈长度
@@ -33,12 +32,13 @@ impl<T> Stack<T> {
 	fn pop(&mut self) -> Option<T> { // 出栈
 		// TODO
 		if 0 == self.size {
-			return None;
+			None
 		} else {
 			self.size -= 1;
 			self.data.pop()  // Vec的pop方法弹出并返回尾部元素
 		}
 	}
+
 	fn peek(&self) -> Option<&T> { // 获取不可变栈顶元素
 		if 0 == self.size {
 			return None;
@@ -112,6 +112,9 @@ fn bracket_match(bracket: &str) -> bool
 		if ['(', '[', '{'].contains(&c) {
 			st.push(c);
 		} else {
+			if ![')', ']', '}'].contains(&c) {
+				continue;
+			}
 			if st.is_empty() {
 				return false;
 			}
